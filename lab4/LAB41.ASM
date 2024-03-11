@@ -19,9 +19,9 @@ lp1:
     mov ah, 0Eh
     int 10h
 
-    inc dh  ; increment y position
-    inc dl  ; increment x position
-    inc al  ; next letter
+    add dh, y_inc   ; increment y position
+    add dl, x_inc   ; increment x position
+    inc al          ; next letter
 
     loop lp1
 
@@ -42,8 +42,8 @@ start_char db 'A'
 loop_count dw 10
 x_start db 1
 y_start db 1
-x_inc db 1
-y_inc db 1
+x_inc db 2
+y_inc db 2
 ; =======================
 
 cseg ends

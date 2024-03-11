@@ -22,7 +22,6 @@ lp1:
 
     inc char1  
     dec char2
-    add dl, x_inc
     add dh, y_inc
 
     loop lp1
@@ -44,7 +43,6 @@ print_char:
     mov bh, 0
     inc dl
     int 10h         ; move cursor forward
-    dec dl
     ret
 
 ; =======================
@@ -56,7 +54,6 @@ char2 db 'z'
 loop_count dw 7
 x_start db 0
 y_start db 0
-x_inc db 2
 y_inc db 1
 ; =======================
 

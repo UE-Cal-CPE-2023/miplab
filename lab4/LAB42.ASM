@@ -19,8 +19,8 @@ lp1:
     mov ah, 0Eh
     int 10h
 
-    inc dh  ; increment y position
-    dec al  ; next letter
+    add dh, y_inc   ; increment y position
+    dec al          ; next letter
 
     loop lp1
 
