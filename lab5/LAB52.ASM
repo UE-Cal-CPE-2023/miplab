@@ -10,46 +10,45 @@ start:
     lea dx, lbl1
     int 21h
 
-    ; get input
+    ; compute needed space to print the output = max_interval * 2
+    xor ax, ax              ; clear ax
+    mov al, max_interval    ; prep max_interval to be multiplied by 2
+    xor dx, dx              ; clear dx
+    mov dl, 2               ; load 2 to dl
+    mul dl                  ; multiply al by 2
+
+    ; store the needed screen space to max_x  
+    mov max_x, al             
+
+    ; read a character from the keyboard
     mov ah, 01h
     int 21h
 
-    ; clear AH and store to stack
-    xor ah, ah
-    push ax
+    xor cx, cx              ; clear cx
+    mov cl, max_interval    ; prep loop counter
+    inc cl                  ; num of characters to be printed is max_interval + 1
 
-
-    mov cx, 1
-    mov bx, 0
-
-    mov ah, 01
-    int 21h
-
-x1:
-    mov [bx], al
-    sub al, count
-    dec count
-    inc bx
-    cmp bx, 10
-    jne x1
-
-    mov bx, 8
-    mov cx, 9
-    mov ah, 09h
-    lea dx, str2
-    int 21h
-
-x2:
-    mov ah, 02
-    mov dl, [bx]
-    int 21h
-    mov ah, 02
-    mov dh, 1
-    mov dl, col
+lp1:
+    ; move cursor
+    mov ah, 02h
+    mov dh, start_y
+    mov dl, max_x           ; computed max_x
     int 10h
-    add col, 2
-    dec bx
-    loop x2
+
+    ; print character
+    sub al, current_interval    ; initial current_interval is 0
+                                ; but will be decremented by 1 in the first iteration
+    mov ah, 0Eh  
+    int 10h
+
+    ; set values for next iteration
+    mov current_interval, cl  
+    dec current_interval        ; store loop counter minus 1 in current_interval
+                                ; this is basically the max_interval,
+                                ; which defines the first decrement value
+    sub max_x, 2              ; move cursor 2 spaces to the left
+
+    loop lp1
 
 exit:
     int 20h
@@ -65,11 +64,10 @@ clr_screen:
 ; data declaration
 ; =======================
 lbl1 db 'Enter a lowercase letter>> $'
-charp db 'A'
-skip db 1
-str2 db 10,13,'$'
-col db 2
-count db 8
+start_y db 1
+max_interval db 8
+current_interval db 0
+max_x db 0
 ; =======================
 
 cseg ends
